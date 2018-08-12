@@ -1,7 +1,15 @@
 (function(Vue) {
-    var loadTemplate = function(name) {
-        return document.getElementById(name + '_tmpl').innerHTML
+
+    const pad = (num, n) => (Array(n).join(0) + num).slice(-n)
+
+    const convertDuration = duration => {
+        const h = Math.floor(duration / 3600)
+        const m = Math.floor(duration % 3600 / 60)
+        const s = Math.floor(duration % 60)
+        return h ? `${pad(h, 2)}:${pad(m, 2)}:${pad(s, 2)}` : `${pad(m, 2)}:${pad(s, 2)}`
     }
+
+    const loadTemplate = name => document.getElementById(name + '_tmpl').innerHTML
 
     // 定义组件
     var Home = {
@@ -9,11 +17,53 @@
     }
 
     var List = {
-        template: loadTemplate('list')
+        template: loadTemplate('list'),
+        data: function() {
+            this.$http.jsonp('http://localhost:2080/api/music')
+                .then(res => {
+                    this.list = res.data
+                })
+
+            return {
+                list: []
+            }
+        },
+        methods: {
+            pad: pad,
+            convert: convertDuration
+        }
     }
 
     var Item = {
-        template: loadTemplate('item')
+        template: loadTemplate('item'),
+        data: function() {
+            return {
+                item: {}
+            }
+        },
+        route: {
+            data: function(transition) {
+                var id = parseInt(transition.to.params.id)
+
+                if (!id) {
+                    router.go('/home')
+                    return
+                }
+
+                this.$http.jsonp('http://localhost:2080/api/music/' + id)
+                    .then(res => {
+                        this.item = res.data
+
+                        var audio = new Audio()
+                        audio.src = this.item.music
+                        audio.play()
+                    })
+
+                return {
+                    item: {}
+                }
+            }
+        }
     }
 
     // 路由器需要一个根组件。
