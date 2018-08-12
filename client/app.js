@@ -1,15 +1,19 @@
 (function(Vue) {
+    var loadTemplate = function(name) {
+        return document.getElementById(name + '_tmpl').innerHTML
+    }
+
     // 定义组件
     var Home = {
-        template: '<img src="assets/img/home.png" alt="" width="100%">'
+        template: loadTemplate('home')
     }
 
     var List = {
-        template: '<h1>List</h1>'
+        template: loadTemplate('list')
     }
 
     var Item = {
-        template: '<h1>Item</h1>'
+        template: loadTemplate('item')
     }
 
     // 路由器需要一个根组件。
