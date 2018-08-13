@@ -55,6 +55,9 @@
                     App.audio.play()
                 }
                 this.item.playing = !this.item.playing
+            },
+            progress() {
+                App.audio.currentTime = this.item.current
             }
         },
         route: {
@@ -70,7 +73,6 @@
 
                 this.$http.jsonp('http://localhost:2080/api/music/' + id)
                     .then(res => {
-                        // console.log(res)
                         if (!res.ok) {
                             router.go({
                                 name: 'list'
@@ -87,21 +89,18 @@
                         App.audio.autoplay = true
 
                         App.audio.addEventListener('loadedmetadata', () => {
-                            console.log('loadedmetadata')
                             this.item.duration = App.audio.duration
                         })
                         App.audio.addEventListener('timeupdate', () => {
-                            console.log('timeupdate')
                             this.item.current = App.audio.currentTime
                         })
                         App.audio.addEventListener('play', () => {
-                            console.log('play')
                             this.item.playing = true
                         })
                         App.audio.addEventListener('pause', () => {
-                            console.log('pause')
                             this.item.playing = false
                         })
+                        console.log(this.item)
                     })
 
                 return {

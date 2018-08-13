@@ -48,7 +48,7 @@
         <div class="player">
             <div class="disc">
                 <img :src="item.poster" alt="{{item.artist}}">
-                <span class="duration">{{convert(item.duration)}}</span>
+                <span class="duration">{{item.duration}}</span>
             </div>
             <h2 class="title">{{item.name}}</h2>
             <h3 class="artist">{{item.artist}}</h3>
@@ -57,7 +57,7 @@
                 <p class="current">情如曲过只遗留无可挽救再分别</p>
                 <p class="next">为何只是失望填密我的空虚</p>
             </div>
-            <input type="range" value="0">
+            <input type="range" value="0" min="0" max="{{item.duration}}" v-model="item.current" @change="progress()">
             <div class="controls">
                 <button><i class="fa fa-retweet"></i></button>
                 <button class="active"><i class="fa fa-backward"></i></button>
