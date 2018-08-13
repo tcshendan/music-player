@@ -9,14 +9,19 @@
         return h ? `${pad(h, 2)}:${pad(m, 2)}:${pad(s, 2)}` : `${pad(m, 2)}:${pad(s, 2)}`
     }
 
+    /**
+     * 加载模板内容
+     * @param  {string} id 模板ID
+     * @return {string}    模板内容
+     */
     const loadTemplate = name => document.getElementById(name + '_tmpl').innerHTML
 
     // 定义组件
-    var Home = {
+    const Home = {
         template: loadTemplate('home')
     }
 
-    var List = {
+    const List = {
         template: loadTemplate('list'),
         data() {
             this.$http.jsonp('http://localhost:2080/api/music')
@@ -34,7 +39,7 @@
         }
     }
 
-    var Item = {
+    const Item = {
         template: loadTemplate('item'),
         data() {
             return {
@@ -42,24 +47,61 @@
             }
         },
         methods: {
-            convert: convertDuration
+            convert: convertDuration,
+            play() {
+                if (this.item.playing) {
+                    App.audio.pause()
+                } else {
+                    App.audio.play()
+                }
+                this.item.playing = !this.item.playing
+            }
         },
         route: {
             data(transition) {
                 var id = parseInt(transition.to.params.id)
 
                 if (!id) {
-                    router.go('/home')
+                    router.go({
+                        name: 'list'
+                    })
                     return
                 }
 
                 this.$http.jsonp('http://localhost:2080/api/music/' + id)
                     .then(res => {
-                        this.item = res.data
+                        // console.log(res)
+                        if (!res.ok) {
+                            router.go({
+                                name: 'list'
+                            })
+                        }
+                        this.item = {
+                            current: 0,
+                            playing: false,
+                            random: false
+                        }
+                        Object.assign(this.item, res.data)
 
-                        var audio = new Audio()
-                        audio.src = this.item.music
-                        audio.play()
+                        App.audio.src = this.item.music
+                        App.audio.autoplay = true
+
+                        App.audio.addEventListener('loadedmetadata', () => {
+                            console.log('loadedmetadata')
+                            this.item.duration = App.audio.duration
+                        })
+                        App.audio.addEventListener('timeupdate', () => {
+                            console.log('timeupdate')
+                            this.item.current = App.audio.currentTime
+                        })
+                        App.audio.addEventListener('play', () => {
+                            console.log('play')
+                            this.item.playing = true
+                        })
+                        App.audio.addEventListener('pause', () => {
+                            console.log('pause')
+                            this.item.playing = false
+                        })
                     })
 
                 return {
@@ -71,12 +113,13 @@
 
     // 路由器需要一个根组件。
     // 出于演示的目的，这里使用一个空的组件，直接使用 HTML 作为应用的模板
-    var App = {}
+    const App = {}
+    App.audio = new Audio()
     //var App = Vue.extend({})
 
     // 创建一个路由器实例
     // 创建实例时可以传入配置参数进行定制，为保持简单，这里使用默认配置
-    var router = new VueRouter()
+    const router = new VueRouter()
 
     // 定义路由规则
     // 每条路由规则应该映射到一个组件。这里的“组件”可以是一个使用 Vue.extend

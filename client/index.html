@@ -37,7 +37,7 @@
                             <span class="artist">{{item.artist}}</span>
                         </div>
                         <span class="duration">{{convert(item.duration)}}</span>
-                        <div class="photo"><img v-bind:src="item.poster" alt="{{item.artist}}"></div>
+                        <div class="photo"><img :src="item.poster" alt="{{item.artist}}"></div>
                     </a>
                 </li>
             </ol>
@@ -47,7 +47,7 @@
     <script id="item_tmpl" type="text/v-template">
         <div class="player">
             <div class="disc">
-                <img v-bind:src="item.poster" alt="{{item.artist}}">
+                <img :src="item.poster" alt="{{item.artist}}">
                 <span class="duration">{{convert(item.duration)}}</span>
             </div>
             <h2 class="title">{{item.name}}</h2>
@@ -61,7 +61,7 @@
             <div class="controls">
                 <button><i class="fa fa-retweet"></i></button>
                 <button class="active"><i class="fa fa-backward"></i></button>
-                <button class="active"><i class="fa fa-play"></i></button>
+                <button class="active" @click="play()"><i class="fa fa-play" :class="{'fa-play': !item.playing, 'fa-pause': item.playing}"></i></button>
                 <button class="active"><i class="fa fa-forward"></i></button>
                 <button class="active"><i class="fa fa-random"></i></button>
             </div>
