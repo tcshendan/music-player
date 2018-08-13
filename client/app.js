@@ -18,7 +18,7 @@
 
     var List = {
         template: loadTemplate('list'),
-        data: function() {
+        data() {
             this.$http.jsonp('http://localhost:2080/api/music')
                 .then(res => {
                     this.list = res.data
@@ -36,13 +36,16 @@
 
     var Item = {
         template: loadTemplate('item'),
-        data: function() {
+        data() {
             return {
                 item: {}
             }
         },
+        methods: {
+            convert: convertDuration
+        },
         route: {
-            data: function(transition) {
+            data(transition) {
                 var id = parseInt(transition.to.params.id)
 
                 if (!id) {
