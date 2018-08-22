@@ -65,19 +65,19 @@
                             })
                         }
                         this.item = {
+                            duration: 0,
                             current: 0,
                             playing: false,
                             random: false
                         }
-                        console.log(res.data)
+
                         Object.assign(this.item, res.data)
-                        console.log(this.item.duration)
+
                         App.audio.src = this.item.music
                         App.audio.autoplay = true
 
                         App.audio.addEventListener('loadedmetadata', () => {
                             this.item.duration = App.audio.duration
-                            console.log(this.item.duration)
                         })
                         App.audio.addEventListener('timeupdate', () => {
                             this.item.current = App.audio.currentTime
