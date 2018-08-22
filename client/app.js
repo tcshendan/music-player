@@ -46,23 +46,9 @@
                 item: {}
             }
         },
-        methods: {
-            convert: convertDuration,
-            play() {
-                if (this.item.playing) {
-                    App.audio.pause()
-                } else {
-                    App.audio.play()
-                }
-                this.item.playing = !this.item.playing
-            },
-            progress() {
-                App.audio.currentTime = this.item.current
-            }
-        },
         route: {
             data(transition) {
-                var id = parseInt(transition.to.params.id)
+                const id = parseInt(transition.to.params.id)
 
                 if (!id) {
                     router.go({
@@ -83,13 +69,15 @@
                             playing: false,
                             random: false
                         }
+                        console.log(res.data)
                         Object.assign(this.item, res.data)
-
+                        console.log(this.item.duration)
                         App.audio.src = this.item.music
                         App.audio.autoplay = true
 
                         App.audio.addEventListener('loadedmetadata', () => {
                             this.item.duration = App.audio.duration
+                            console.log(this.item.duration)
                         })
                         App.audio.addEventListener('timeupdate', () => {
                             this.item.current = App.audio.currentTime
@@ -100,12 +88,65 @@
                         App.audio.addEventListener('pause', () => {
                             this.item.playing = false
                         })
-                        console.log(this.item)
                     })
 
                 return {
                     item: {}
                 }
+            }
+        },
+        methods: {
+            convert: convertDuration,
+            play() {
+                if (this.item.playing) {
+                    App.audio.pause()
+                } else {
+                    App.audio.play()
+                }
+                this.item.playing = !this.item.playing
+            },
+            progress() {
+                App.audio.currentTime = this.item.current
+            },
+            next() {
+                this.$http.jsonp('http://localhost:2080/api/music')
+                    .then(res => {
+                        // console.log(res.data)
+                        const ids = res.data.map(s => s.id)
+
+                        let targetIndex = ids.indexOf(this.item.id) + 1
+
+                        if (targetIndex > ids.length - 1) {
+                            targetIndex = 0
+                        }
+
+                        router.go({
+                            name: 'item',
+                            params: {
+                                id: ids[targetIndex]
+                            }
+                        })
+                    })
+            },
+            prev() {
+                this.$http.jsonp('http://localhost:2080/api/music')
+                    .then(res => {
+                        // console.log(res.data)
+                        const ids = res.data.map(s => s.id)
+
+                        let targetIndex = ids.indexOf(this.item.id) - 1
+
+                        if (targetIndex < 0) {
+                            targetIndex = ids.length - 1
+                        }
+
+                        router.go({
+                            name: 'item',
+                            params: {
+                                id: ids[targetIndex]
+                            }
+                        })
+                    })
             }
         }
     }
