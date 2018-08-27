@@ -1,39 +1,24 @@
-# Music Player by Vue Stack
-
-## Static pages
-
-https://github.com/zce/music-player-pages
-
-## Clone it
-
-```bash
-$ git clone https://github.com/zce/music-player.git -b vue --depth 1
-$ cd music-player
-```
+# Music Player by Angular Stack
 
 ## Run it
 
-### Install Dependencies
-
 ```bash
 $ npm install
+$ npm start
 ```
 
 ### Server Side
-
-```bash
-$ npm run serve
-```
 
 visit http://localhost:2080/music/list in browser
 
 ### Client Side
 
-Open another Terminal and run:
+visit projectdir/client/index.html in browser
 
-```bash
-$ npm run client
-```
 
-visit http://localhost:3000 in browser
-
+1. 创建一个单一入口的HTML文件
+2. 创建一个app.js文件，在这个文件中创建一个Angular模块用于处理当前应用程序
+3. 强模块作用于特定的DOM元素上
+4. 设计路由
+5. 设计控制器和视图
+6. 先根据页面建模 → viewModel title artist 总时间 当前播放 playing 按钮
