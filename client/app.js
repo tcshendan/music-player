@@ -1,5 +1,7 @@
 (function(Vue) {
 
+    const serveUrl = `http://localhost:2080/api`
+
     const pad = (num, n) => (Array(n).join(0) + num).slice(-n)
 
     const convertDuration = duration => {
@@ -24,7 +26,7 @@
     const List = {
         template: loadTemplate('list'),
         data() {
-            this.$http.jsonp('http://localhost:2080/api/music')
+            this.$http.jsonp(`${serveUrl}/music`)
                 .then(res => {
                     this.list = res.data
                 })
@@ -43,7 +45,8 @@
         template: loadTemplate('item'),
         data() {
             return {
-                item: {}
+                item: {},
+                isActive: false
             }
         },
         route: {
@@ -57,7 +60,7 @@
                     return
                 }
 
-                this.$http.jsonp('http://localhost:2080/api/music/' + id)
+                this.$http.jsonp(`${serveUrl}/music/` + id)
                     .then(res => {
                         if (!res.ok) {
                             router.go({
@@ -79,16 +82,28 @@
                         App.audio.addEventListener('loadedmetadata', () => {
                             this.item.duration = App.audio.duration
                         })
+
                         App.audio.addEventListener('timeupdate', () => {
                             this.item.current = App.audio.currentTime
                         })
+
                         App.audio.addEventListener('play', () => {
                             this.item.playing = true
                         })
+
                         App.audio.addEventListener('pause', () => {
                             this.item.playing = false
                         })
+
+                        App.audio.addEventListener('ended', () => {
+                            if (this.isActive) {
+                                App.audio.play()
+                            }
+                        })
                     })
+                    .catch(error => router.go({
+                        name: 'list'
+                    }))
 
                 return {
                     item: {}
@@ -109,7 +124,7 @@
                 App.audio.currentTime = this.item.current
             },
             next() {
-                this.$http.jsonp('http://localhost:2080/api/music')
+                this.$http.jsonp(`${serveUrl}/music`)
                     .then(res => {
                         // console.log(res.data)
                         const ids = res.data.map(s => s.id)
@@ -129,7 +144,7 @@
                     })
             },
             prev() {
-                this.$http.jsonp('http://localhost:2080/api/music')
+                this.$http.jsonp(`${serveUrl}/music`)
                     .then(res => {
                         // console.log(res.data)
                         const ids = res.data.map(s => s.id)
@@ -149,7 +164,7 @@
                     })
             },
             random() {
-                this.$http.jsonp('http://localhost:2080/api/music')
+                this.$http.jsonp(`${serveUrl}/music`)
                     .then(function(res) {
                         const ids = res.data.map(s => s.id)
 
@@ -163,8 +178,11 @@
                                 id: ids[targetIndex]
                             }
                         })
-                        
+
                     })
+            },
+            single() {
+                this.isActive = !this.isActive;
             }
         }
     }

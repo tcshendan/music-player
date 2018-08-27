@@ -59,7 +59,7 @@
             </div>
             <input type="range" value="0" min="0" max="{{item.duration}}" v-model="item.current" @change="progress()">
             <div class="controls">
-                <button><i class="fa fa-retweet"></i></button>
+                <button :class="{active: isActive}" @click="single()"><i class="fa fa-retweet"></i></button>
                 <button class="active" @click="prev()"><i class="fa fa-backward"></i></button>
                 <button class="active" @click="play()"><i class="fa fa-play" :class="{'fa-play': !item.playing, 'fa-pause': item.playing}"></i></button>
                 <button class="active" @click="next()"><i class="fa fa-forward"></i></button>
