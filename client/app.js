@@ -147,6 +147,24 @@
                             }
                         })
                     })
+            },
+            random() {
+                this.$http.jsonp('http://localhost:2080/api/music')
+                    .then(function(res) {
+                        const ids = res.data.map(s => s.id)
+
+                        //随机取得数组中的元素
+                        let targetIndex = Math.floor(Math.random() * ids.length + 1) - 1;
+                        console.log(targetIndex);
+
+                        router.go({
+                            name: 'item',
+                            params: {
+                                id: ids[targetIndex]
+                            }
+                        })
+                        
+                    })
             }
         }
     }
