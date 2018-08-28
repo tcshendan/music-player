@@ -16,6 +16,10 @@
                 controller: 'ListController',
                 templateUrl: 'list'
             })
+            .when('/item/:id', {
+                controller: 'ItemController',
+                templateUrl: 'item'
+            })
             .otherwise({
                 redirectTo: '/home'
             })
@@ -41,6 +45,54 @@
 
         //行为操作初始化
         $scope.action = {};
+    }]);
+
+    //详情页Controller
+    app.controller('ItemController', ['$scope', '$http', '$routeParams', function($scope, $http, $routeParams) {
+        window.audio && window.audio.pause()
+        window.audio = new Audio()
+
+        $scope.item = {};
+        $scope.duration = 0;
+        $scope.current = 0;
+        $scope.playing = false;
+
+        $http.jsonp('http://localhost:2080/api/music/' + $routeParams.id + '?callback=JSON_CALLBACK')
+            .then(res => {
+                console.log(res);
+
+                $scope.item = res.data;
+
+                audio.src = $scope.item.music;
+                audio.autoplay = true;
+
+                audio.addEventListener('loadedmetadata', () => {
+                    $scope.duration = audio.duration;
+                    $scope.$apply();
+                });
+
+                audio.addEventListener('timeupdate', () => {
+                    $scope.current = audio.currentTime;
+                    $scope.$apply();
+                });
+
+                audio.addEventListener('playing', () => {
+                    $scope.playing = true;
+                    $scope.$apply();
+                });
+
+            });
+
+        $scope.action = {};
+
+        $scope.action.progress = function() {
+            audio.currentTime = $scope.current;
+        }
+
+        $scope.action.play = function() {
+            $scope.playing ? audio.pause() : audio.play();
+            $scope.playing = !$scope.playing;
+        }
     }]);
 
     app.service('padService', function() {
