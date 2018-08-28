@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Music Player</title>
+    <link rel="stylesheet" href="assets/css/normalize.css">
+    <link rel="stylesheet" href="assets/css/font-awesome.css">
+    <link rel="stylesheet" href="assets/css/app.css">
+    <!-- <link href="http://fonts.useso.com/css?family=Open+Sans:400,300" rel="stylesheet" type="text/css"> -->
+</head>
+
+<body class="page" ng-app="musicApp">
+    <header class="header">
+        <a href="#/home"><i class="fa fa-expand"></i></a>
+        <h1><i class="fa fa-music"></i> Music Player</h1>
+        <a href="#/list"><i class="fa fa-list"></i></a>
+    </header>
+    <section class="main" ng-view></section>
+
+    <script src="assets/lib/angular.js"></script>
+    <script src="assets/lib/angular-route.js"></script>
+    <script src="app.js"></script>
+
+    <!-- 在页面中定义模版的方式 必须有ID， 其次 type一定不能是text/javascript -->
+    <!-- 首页模板 -->
+    <script id="home" type="text/ng-template">
+        <img src="assets/img/home.png" alt="" width="100%" />
+    </script>
+</body>
+
+</html>
