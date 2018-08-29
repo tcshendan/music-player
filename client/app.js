@@ -33,7 +33,7 @@
     }]);
 
     //列表页Controller
-    app.controller('ListController', ['$scope', '$http', function($scope, $http) {
+    app.controller('ListController', ['$rootScope', '$scope', '$http', function($rootScope, $scope, $http) {
         //数据初始化（计算、ajax）操作（$http）
         $scope.data = {};
 
@@ -42,7 +42,7 @@
             .then(res => {
                 console.log(res);
                 $scope.data.list = res.data;
-
+                $rootScope.total = res.data.length;
             });
 
         //行为操作初始化
@@ -50,7 +50,7 @@
     }]);
 
     //详情页Controller
-    app.controller('ItemController', ['$scope', '$http', '$state', '$stateParams', function($scope, $http, $state, $stateParams) {
+    app.controller('ItemController', ['$rootScope', '$scope', '$http', '$state', '$stateParams', function($rootScope, $scope, $http, $state, $stateParams) {
         window.audio && window.audio.pause()
         window.audio = new Audio()
 
@@ -97,13 +97,27 @@
         }
 
         $scope.action.prev = function() {
+            let id = parseInt($stateParams.id) - 1;
+
+            if (id < 1) {
+                id = $rootScope.total;
+            }
+
             $state.go('item', {
-                id: 4
+                id: id
             });
         }
 
         $scope.action.next = function() {
-            alert('next');
+            let id = parseInt($stateParams.id) + 1;
+
+            if (id > $rootScope.total) {
+                id = 1;
+            }
+
+            $state.go('item', {
+                id: id
+            });
         }
     }]);
 
