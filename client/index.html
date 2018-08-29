@@ -14,14 +14,15 @@
 
 <body class="page" ng-app="musicApp">
     <header class="header">
-        <a href="#/home"><i class="fa fa-expand"></i></a>
+        <a ui-sref="home"><i class="fa fa-expand"></i></a>
         <h1><i class="fa fa-music"></i> Music Player</h1>
-        <a href="#/list"><i class="fa fa-list"></i></a>
+        <a ui-sref="list"><i class="fa fa-list"></i></a>
     </header>
-    <section class="main" ng-view></section>
+    <section class="main" ui-view></section>
 
     <script src="assets/lib/angular.js"></script>
-    <script src="assets/lib/angular-route.js"></script>
+    <!-- <script src="assets/lib/angular-route.js"></script> -->
+    <script src="assets/lib/angular-ui-router.min.js"></script>
     <script src="app.js"></script>
 
     <!-- 在页面中定义模版的方式 必须有ID， 其次 type一定不能是text/javascript -->
@@ -35,7 +36,7 @@
         <div class="list">
             <ol>
                 <li ng-repeat="item in data.list">
-                    <a href="#/item/{{item.id}}">
+                    <a ui-sref="item({id: item.id})">
                         <span class="num">{{item.id | covertNum:3}}</span>
                         <div class="info">
                           <h3 class="title">{{item.name}}</h3>
@@ -66,9 +67,9 @@
             <input type="range" min="0" max="{{duration}}" ng-model="current" ng-change="action.progress()">
             <div class="controls">
                 <button><i class="fa fa-retweet"></i></button>
-                <button class="active"><i class="fa fa-backward"></i></button>
+                <button class="active" ng-click="action.prev()"><i class="fa fa-backward"></i></button>
                 <button class="active" ng-click="action.play()"><i class="fa" ng-class="{'fa-play': !playing, 'fa-pause': playing}"></i></button>
-                <button class="active"><i class="fa fa-forward"></i></button>
+                <button class="active" ng-click="action.next()"><i class="fa fa-forward"></i></button>
                 <button class="active"><i class="fa fa-random"></i></button>
             </div>
         </div>

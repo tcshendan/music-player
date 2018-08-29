@@ -3,26 +3,28 @@
     // 定义一个NG模块管理应用程序，第二个参数必须要传递，否则变为获取已经有的模块
 
     //创建模块
-    var app = angular.module('musicApp', ['ngRoute']);
+    var app = angular.module('musicApp', ['ui.router']);
 
     //路由配置
-    app.config(['$routeProvider', function($routeProvider) {
-        $routeProvider
-            .when('/home', {
-                controller: 'HomeController',
-                templateUrl: 'home'
+    app.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
+        $urlRouterProvider.otherwise('/home');
+
+        $stateProvider
+            .state('home', {
+                url: '/home',
+                templateUrl: 'home',
+                controller: 'HomeController'
             })
-            .when('/list', {
-                controller: 'ListController',
-                templateUrl: 'list'
+            .state('list', {
+                url: '/list',
+                templateUrl: 'list',
+                controller: 'ListController'
             })
-            .when('/item/:id', {
-                controller: 'ItemController',
-                templateUrl: 'item'
-            })
-            .otherwise({
-                redirectTo: '/home'
-            })
+            .state('item', {
+                url: '/item/:id', //：id定义参数；定义方式三种 1./page1/：id/：name 2./page1/{id}/{name}/ 3./page1?id&name 在跳转页面用$stateParams接收
+                templateUrl: 'item',
+                controller: 'ItemController'
+            });
     }]);
 
     //首页Controller
@@ -48,7 +50,7 @@
     }]);
 
     //详情页Controller
-    app.controller('ItemController', ['$scope', '$http', '$routeParams', function($scope, $http, $routeParams) {
+    app.controller('ItemController', ['$scope', '$http', '$state', '$stateParams', function($scope, $http, $state, $stateParams) {
         window.audio && window.audio.pause()
         window.audio = new Audio()
 
@@ -57,7 +59,7 @@
         $scope.current = 0;
         $scope.playing = false;
 
-        $http.jsonp('http://localhost:2080/api/music/' + $routeParams.id + '?callback=JSON_CALLBACK')
+        $http.jsonp('http://localhost:2080/api/music/' + $stateParams.id + '?callback=JSON_CALLBACK')
             .then(res => {
                 console.log(res);
 
@@ -92,6 +94,16 @@
         $scope.action.play = function() {
             $scope.playing ? audio.pause() : audio.play();
             $scope.playing = !$scope.playing;
+        }
+
+        $scope.action.prev = function() {
+            $state.go('item', {
+                id: 4
+            });
+        }
+
+        $scope.action.next = function() {
+            alert('next');
         }
     }]);
 
